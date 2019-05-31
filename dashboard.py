@@ -27,6 +27,7 @@ class CustomIndexDashboard(Dashboard):
     title = ''
 
     def init_with_context(self, context):
+        self.template = 'base.html'
         site_name = get_admin_site_name(context)   
 
 
@@ -37,23 +38,6 @@ class CustomAppIndexDashboard(AppIndexDashboard):
 
     # we disable title because its redundant with the model list module
     title = ''
-
-    def __init__(self, *args, **kwargs):
-        AppIndexDashboard.__init__(self, *args, **kwargs)
-
-        # append a model list module and a recent actions module
-        self.children += [
-            modules.ModelList(self.app_title, self.models),
-            modules.RecentActions(
-                _('Recent Actions'),
-                include_list=self.get_app_content_types(),
-                limit=5
-            ),
-            modules.DashboardModule(
-                enabled = True,
-                template = 'mysite/templates/base.html'
-            )
-        ]
 
     def init_with_context(self, context):
         """
