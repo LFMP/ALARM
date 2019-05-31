@@ -46,8 +46,8 @@ To perform the deploy of the application the command below can be executed.
 
 ## Authors
 
-* **Arthur Rodrigues Batista** - *Initial work* - [LFMP](https://github.com/LFMP)
-* **Luiz Fellipe Machi Pereira** - *Initial work* - [ArthurBatista04](https://github.com/ArthurBatista04)
+* **Arthur Rodrigues Batista** - *Initial work* - [ArthurBatista04](https://github.com/ArthurBatista04)
+* **Luiz Fellipe Machi Pereira** - *Initial work* - [LFMP](https://github.com/LFMP)
 
 See also the list of [contributors](https://github.com/LFMP/ALARM/contributors) who participated in this project.
 
