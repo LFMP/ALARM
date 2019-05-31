@@ -1,7 +1,7 @@
 #!/bin/bash
-setup(){ 
+setup(){
   if [[ ! -d env ]]; then
-    virtualenv3 env
+    virtualenv env
   fi
   source env/bin/activate
   pip install -r requirements.txt
