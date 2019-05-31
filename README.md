@@ -22,6 +22,7 @@ Sqlite3
 Installing the libraries and creating the Python runtime environment for platform operation can be done through the 'setup.sh' script with the command below.
 
 ```
+pip3 install virtualenv
 ./setup.sh -s
 ```
 
