@@ -1,0 +1,6 @@
+.idea/
+mysite/__pycache__/
+webapp/__pycache__/
+alarm/__pycache__/
+__pycache__/
+.vscode/

@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+{% load static from staticfiles %}
+<!DOCTYPE html>
+{% block title %}Grafico{% endblock %}
+
+{% block content %}
+{% load static %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoaderidaporgeracao/recomendacaoDia.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoaderidaporgeracao/recomendacaoMes.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoaderidaporgeracao/recomendacaoAno.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script >
+	function legenda(){
+		Swal.fire({
+            title: 'Recomendação aderida por geração',
+            type: 'info',
+            text: 'Relação por dia (dia atual), mês (01 - dia atual) e ano (primeiro dia de recomendação do ano - dia atual) com a quantidade de recomendações geradas (pelos seus respectivos recomendadores) que obtiveram acessos. Observação: se houve um total de 50 recomendações geradas durante o dia, 25 sendo do recomendador1 e 20 sendo do recomendador2, o resto chamamos de "Não-Clicada". '
+        });
+	}
+</script>
+
+
+<input type="button" value="Legenda" onclick="legenda()" />
+
+<form method="POST">
+  {% csrf_token %}
+	<div style="width: 100%;">
+
+	 <div style="float: left; " id="recomendacaoDia"></div>
+	 <div style="float: left; " id="recomendacaoMes"></div>
+	 <div style="float: left; " id="recomendacaoAno"></div>
+	 <br style="clear: left;" />
+	</div>
+</form>	
+
+
+{% endblock %}

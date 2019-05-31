@@ -1,0 +1,41 @@
+{% extends "admin/base_site.html" %}
+{% load static from staticfiles %}
+<!DOCTYPE html>
+{% block title %}Grafico{% endblock %}
+
+{% block content %}
+{% load static %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoacessada/recomendacaoDia.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoacessada/recomendacaoMes.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoacessada/recomendacaoAno.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoacessada/recomendacaoHora.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script >
+	function legenda(){
+		Swal.fire({
+            title: 'Recomendação Acessada',
+            type: 'info',
+            text: 'Relação por hora (00:00-24:00 hrs), dia (dia atual), mês (01 - dia atual) e ano (primeiro dia de recomendação do ano - dia atual) com a quantidade de recomendações geradas (pelos seus respectivos recomendadores) que obtiveram acessos. '
+        });
+	}
+</script>
+
+
+<input type="button" value="Legenda" onclick="legenda()" />
+
+
+<form method="POST">
+  {% csrf_token %}
+  <div class = "dashboard-module" id="recomendacaoHora"></div>
+  <div class = "dashboard-module" id="recomendacaoDia"></div>
+  <div id="recomendacaoMes"></div>
+   <div id="recomendacaoAno"></div>
+</form>
+
+
+
+
+{% endblock %}

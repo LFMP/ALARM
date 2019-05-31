@@ -1,0 +1,153 @@
+{% extends "admin/base_site.html" %}
+{% load static from staticfiles %}
+<!DOCTYPE html>
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>	
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    function sendContent(){
+        if(document.getElementById('RName').value != ""){
+            text = {
+                "nome": document.getElementById('RName').value,
+                "valor":editor.getValue(),
+            };
+            text = JSON.stringify(text);
+            $.ajax({
+                type: 'POST',
+                url: window.location.origin + "/admin/code",
+                data: text,
+                dataType: "json",
+                success: function(){
+                    swal({
+                        icon: 'success',
+                        title: 'Código enviado',
+
+                    });
+                    setTimeout(function() {
+                        window.location.replace(window.location.origin+"/admin")
+                    },1500);
+                },
+                error: function (erro) {
+                    console.log(erro);
+                  swal({
+                  title: erro.responseJSON.type,
+                  text: erro.responseJSON.args,
+                  icon: "warning",
+                });
+                
+              }
+            });
+        }else{
+            swal({
+                icon: 'error',
+                title: 'Preencha o nome e confirme!',
+
+            })
+        }
+    }
+
+    function changeName(){
+        var campo = document.getElementById('RName').value;
+        document.getElementById('send').disabled = false;
+        if(campo != ""){
+            editor.find('NameOfRecommendator');
+            editor.replace(campo);
+        }
+        swal({
+            icon: 'warning',
+            title: 'Confirme se o nome da função foi alterada!',
+            });
+    }
+</script>
+
+<form action="." method="POST">
+{% csrf_token %}
+
+<div class="fieldWrapper" id="the_post">
+{{form.text}}
+<p style="float:left;padding-left:5%;">
+    <strong>Nome do recomendador :</strong>
+    <br>
+    <input type="text" id="RName" name="RName" required>
+    <input type="button" value="Confirmar" onclick="changeName()" style=" display: inline-block;"/>
+</p>
+
+<div id="instrucoes">"""
+Observações:
+O parâmetro "data" possui informações referente ao clique, sendo elas:
+
+data.ip, -> IP do click
+data.idUser, -> ID único do usuário
+data.idClick, -> ID único do click
+data.classe, -> Classe contida na tag do click
+data.texto, -> Conteúdo contido na tag do click
+data.current, -> Página de onde veio o click
+data.href, -> Página para qual será direcionado
+data.timestamp, -> Tempo de permanência, em ms, na página até o click
+data.dateTimestamp, -> Data e hora do click em formato de timestamp
+data.dateR -> Data no formato string
+
+O vetor recomendacoes deverá conter apenas links
+
+Exemplo:
+recomendacoes=[link_1.com,link_2.com ... link_n.com]
+
+Informações auxiliares(consultas no banco de dados):
+-https://docs.djangoproject.com/en/2.1/topics/db/sql/
+-https://docs.djangoproject.com/en/2.1/ref/models/querysets/
+"""
+
+</div>
+<br/>
+<div id="editor">
+from webapp.models import Adapters, Post, RecomendacaoAcessada, RecomendacaoGerada    
+def NameOfRecommendator(request,data):
+    recomendacoes = []
+    """
+        Insert code here!
+    """
+    return recomendacoes
+</div>
+</div>
+</form>
+<p style="float:right;padding-right:5%; padding-top:1%">
+    <input type="submit" id="send" value="Salvar" disabled onclick="sendContent()"/>
+</p>
+
+<script>
+    var instrucoes = ace.edit("instrucoes");
+    instrucoes.setTheme("ace/theme/github");
+    instrucoes.session.setMode("ace/mode/python");
+    instrucoes.setReadOnly(true);
+    instrucoes.setOptions({
+        copyWithEmptySelection: true,
+        maxLines: 100,
+        wrap: true,
+    });
+    
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/github");
+    editor.session.setMode("ace/mode/python");
+    editor.setOptions({
+        copyWithEmptySelection: true,
+        maxLines: 100,
+        wrap: true,
+    });
+</script>
+
+<style type="text/css" media="screen">
+    #editor {
+        margin: auto;
+        height: 200px;
+        width: 90%;
+        border: 1px solid black;
+    }
+    #instrucoes{
+        margin: auto;
+        height: 200px;
+        width: 90%;
+        border: 1px solid black;
+    }
+    </style>
+{% endblock %}

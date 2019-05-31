@@ -1,0 +1,6 @@
+django
+django-admin-tools
+python-dateutil
+django-jsonfield
+djcacheutils
+gunicorn

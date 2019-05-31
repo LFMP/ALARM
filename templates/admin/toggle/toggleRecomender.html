@@ -1,0 +1,305 @@
+{% extends "admin/base_site.html" %}
+<!DOCTYPE html>
+{% block title %}Gerenciar Recomendadores{% endblock %}
+
+{% block content %}
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>	  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+
+
+
+<form method="POST">
+  {% csrf_token %}
+  <div>
+
+    <table style="width:90%" id="tb1">
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Deletar</th>
+        <th>Visualizar Código</th>
+      </tr>
+    </table>
+  </div>
+</form>
+
+
+
+
+<script>
+  function states(idToggle){
+      var cap = document.getElementById(idToggle).checked;
+      var newState;
+      if(cap){
+        newState = 1;
+      }else{
+        newState = 0;
+      }
+      $.ajax({
+        type: 'POST',
+        url: window.location.origin + "/admin/toggleRecommendator",
+        data: JSON.stringify({"nome":idToggle.split('-')[1],"value":newState}),
+        dataType: "json",
+        success: function(){
+          Swal.fire({
+            title: "Atualizado",
+            type: "success",
+          });
+          setTimeout(function() {
+            window.location.replace(window.location.origin+"/admin/managercodes")
+          },1500);
+        }
+      });
+  }
+    
+
+  function deleteR(idDelete){
+      Swal.fire({
+          title: "Tem certeza?",
+          text: "Uma vez deletado não é mais possível recuperar!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sim, delete!'
+        })
+        .then((willDelete) => {
+          if (willDelete.value) {
+            $.ajax({
+              type: 'POST',
+              url: window.location.origin + "/admin/deleteRecommendator",
+              data: JSON.stringify({"name":idDelete.split('-')[1],}),
+              dataType: "json",
+              success: function(){
+                Swal.fire({
+                  title: "Deletado",
+                  type: "success",
+                });
+                setTimeout(function() {
+                  window.location.replace(window.location.origin+"/admin/managercodes")
+                },1500);
+              },
+                error: function () {
+                  Swal.fire({
+                  title: "O arquivo inexiste!",
+                  type: "error",
+                });
+                 setTimeout(function() {
+                  window.location.replace(window.location.origin+"/admin/managercodes")
+                },1500);
+              }
+            });
+          } else {
+            Swal.fire("A função não foi deletada!");
+          }
+        });
+  }
+
+  function visualizarR(idVisualizar){
+      $.ajax({
+        type: 'POST',
+        url: window.location.origin + "/admin/visulizarRecommendator",
+        data: JSON.stringify({"name":idVisualizar.split('-')[1],}),
+        dataType: "json",
+        success: function(json){
+          Swal.fire({
+            title: json.nome,
+            html: '<textarea rows="20" cols="110" readonly="readonly" >'+ json.conteudo+'</textarea>',
+            width: '1200px'
+          });
+        },
+          error: function () {
+            Swal.fire({
+            title: "O arquivo inexiste!",
+            type: "error",
+          });
+           setTimeout(function() {
+            window.location.replace(window.location.origin+"/admin/managercodes")
+          },1500);
+        }
+      });
+         
+        
+  }
+  $.get(window.location.origin + "/admin/toggleRecommendator",function(data){
+    var table = document.getElementById("tb1");
+    for(var [key,value] of Object.entries(data)){
+      var row = table.insertRow(table.rows.length);
+      row.insertCell(0).innerHTML = '<div class="centertext">'+key+'</div>';
+      if(value[0]==1){
+        row.insertCell(1).innerHTML = '<label class="switch"> <input onchange=states(this.id) id = "toggle-'+key+'"  type="checkbox" checked> <span class="slider round"> </span> </label>';
+      }else{
+        row.insertCell(1).innerHTML = ' <label class="switch"> <input onchange=states(this.id) id = "toggle-'+key+'" type="checkbox" > <span class="slider round" > </span> </label> ';
+      }
+      row.insertCell(2).innerHTML = '<input type="button" class="deletebutton" value="Deletar" onclick=deleteR(this.id) id="delete-'+key+'">';
+      row.insertCell(3).innerHTML = '<input type="button" class ="visualizarbutton"  value="Visualizar" onclick=visualizarR(this.id) id="visualizar-'+key+'">';
+      
+    }
+  })
+  </script>
+  
+  <style type="text/css">
+    th{
+      text-align:center;
+    }
+    td{
+      text-align:center;
+      vertical-align: middle;
+    }
+    table{
+      text-align: center;
+      margin:auto;
+    }
+    #question {
+      background: gray;
+      border-radius: 50%;
+      float:right;
+
+    }
+    #tablebutton{
+      text-align: center;
+      vertical-align: middle;
+    }
+    .visualizarbutton{
+      background: white;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+    .deletebutton{
+      background: red;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+    .button, input[type=submit], input[type=button], .submit-row input, a.button{
+      background: red;
+    }
+    .centertext{
+      margin : auto;
+    }
+    
+  </style>
+
+  <style type="text/css">
+
+    .led-green {
+      margin: 0 auto;
+      width: 24px;
+      height: 24px;
+      background-color: #ABFF00;
+      border-radius: 50%;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+    }
+
+
+    .led-red {
+      margin: 0 auto;
+      width: 24px;
+      height: 24px;
+      background-color: #F00;
+      border-radius: 50%;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+      -webkit-animation: blinkRed 0.5s infinite;
+      -moz-animation: blinkRed 0.5s infinite;
+      -ms-animation: blinkRed 0.5s infinite;
+      -o-animation: blinkRed 0.5s infinite;
+      animation: blinkRed 0.5s infinite;
+    }
+
+    @-webkit-keyframes blinkRed {
+        from { background-color: #F00; }
+        50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
+        to { background-color: #F00; }
+    }
+    @-moz-keyframes blinkRed {
+        from { background-color: #F00; }
+        50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
+        to { background-color: #F00; }
+    }
+    @-ms-keyframes blinkRed {
+        from { background-color: #F00; }
+        50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
+        to { background-color: #F00; }
+    }
+    @-o-keyframes blinkRed {
+        from { background-color: #F00; }
+        50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
+        to { background-color: #F00; }
+    }
+    @keyframes blinkRed {
+        from { background-color: #F00; }
+        50% { background-color: #A00; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;}
+        to { background-color: #F00; }
+    }  
+
+  </style>
+
+  <style type="text/css">
+      .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: green;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  </style>
+{% endblock %}

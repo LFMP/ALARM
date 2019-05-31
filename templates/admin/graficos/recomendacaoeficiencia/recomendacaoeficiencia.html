@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load static from staticfiles %}
+<!DOCTYPE html>
+{% block title %}Grafico{% endblock %}
+
+{% block content %}
+{% load static %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoeficiencia/recomendacaoMinima.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoeficiencia/recomendacaoMaxima.js' %}"></script>
+<script type="text/javascript" src="{% static 'graficos/js/recomendacaoeficiencia/recomendacaoMedia.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script >
+	function legenda(){
+		Swal.fire({
+            title: 'Eficiência dos recomendadores',
+            type: 'info',
+            text: 'Para cada recomendador, ao longo de cada dia do mês, é realizada uma divisão - Quantidade de Recomendações Acessadas dividida pela Quantidade de Recomendações Geradas - o valor é convertido em porcentagem e então é feito uma extração do mínimo, média e máximo desses valores durante o mês. '
+        });
+	}
+</script>
+
+
+<input type="button" value="Legenda" onclick="legenda()" />
+
+
+<form method="POST">
+  {% csrf_token %}
+  <div id="recomendacaoMinima"></div>
+  <div  id="recomendacaoMedia"></div>
+  <div id="recomendacaoMaxima"></div>
+
+</form>
+
+
+
+
+{% endblock %}
