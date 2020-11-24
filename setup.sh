@@ -13,7 +13,7 @@ setup(){
 
 run(){
   source env/bin/activate
-  screen -dmSL alarm gunicorn mysite.wsgi:application
+  gunicorn mysite.wsgi:application
 }
 
 helpI(){
